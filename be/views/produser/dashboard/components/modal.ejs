@@ -1,0 +1,107 @@
+<div class="modal fade" id="addTransactionModal" tabindex="-1" role="dialog" aria-labelledby="addTransactionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTransactionModalLabel">Tambah Produk</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-transaction-form">
+                    <div class="form-group">
+                        <label for="varietasKopi">Varietas Kopi</label>
+                        <select name="" id="kopi" class="form-control">
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kuantitas">Kuantitas (gr)</label>
+                        <input type="number" class="form-control" id="kuantitas" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggalProduksi">Tanggal Produksi</label>
+                        <input type="date" class="form-control" id="tanggalProduksi" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tanggalKadaluwarsa">Tanggal Kadaluwarsa</label>
+                        <input type="date" class="form-control" id="tanggalKadaluwarsa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="alamatCustomer">Alamat wallet customer</label>
+                        <input type="text" class="form-control" id="alamatCustomer" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tambah</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    document.getElementById("create-transaction-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const accounts = await ethereum.request({
+            method: 'eth_requestAccounts',
+        });
+
+        const web3 = new Web3(window.ethereum);
+        const address = JSON.parse(localStorage.getItem("address"));
+        const abi = JSON.parse(localStorage.getItem("abi"));
+        const contract = new web3.eth.Contract(abi, address.address)
+
+        const kopiID = d.getElementById("kopi").value;
+        const varietasKopi = d.getElementById("kopi").options[d.getElementById("kopi").selectedIndex].text
+        const kuantitas = d.getElementById("kuantitas").value;
+        const tanggalProduksi = d.getElementById("tanggalProduksi").value;
+        const tanggalKadaluwarsa = d.getElementById("tanggalKadaluwarsa").value;
+        const productId = `${varietasKopi.substr(0, 1)}${new Date(tanggalProduksi).getTime()}`
+        // const userTransaction = await contract.methods.getTransactionByWallet(accounts[0]).call();
+
+        // console.log("kopi id ",kopi);
+        try {
+            await contract.methods.addProduk(kopiID, varietasKopi, kuantitas, new Date(tanggalProduksi).getTime(), new Date(tanggalKadaluwarsa).getTime(), productId).send({
+                from: accounts[0],
+            })
+            alert(productId);
+            await contract.methods.addTransaksi(kopiID, varietasKopi, kuantitas, d.getElementById("alamatCustomer").value, new Date(tanggalProduksi).getTime(), productId).send({
+                from: accounts[0],
+            })
+            alert("Berhasil membuat transaksi")
+
+            window.location.reload()
+        } catch (error) {
+            console.error(error)
+            alert("terjadi kesalahan " + error.toString());
+        }
+
+    })
+
+    window.onload = async () => {
+        const accounts = await ethereum.request({
+            method: 'eth_requestAccounts',
+        });
+        const web3 = new Web3(window.ethereum);
+        const address = JSON.parse(localStorage.getItem("address"));
+        const abi = JSON.parse(localStorage.getItem("abi"));
+        const contract = new web3.eth.Contract(abi, address.address)
+        let userTransaction = await contract.methods.getTransactionByWallet(accounts[0]).call();
+        userTransaction = await userTransaction.filter((value, index, self) => {
+            return index === self.findIndex((t) => {
+                return t.kopiID.toLowerCase() === value.kopiID.toLowerCase()
+            })
+        })
+        let html = `<option value="">Pilih varietas kopi</option>`;
+
+        userTransaction.forEach((e) => {
+            html += `
+                <option value='${e.kopiID}'>${e.varietas}</option>
+            `
+        })
+
+        document.getElementById("kopi").innerHTML = html
+    }
+</script>

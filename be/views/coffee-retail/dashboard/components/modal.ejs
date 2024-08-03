@@ -1,0 +1,98 @@
+<div class="modal fade" id="addTransactionModal" tabindex="-1" role="dialog" aria-labelledby="addTransactionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTransactionModalLabel">Tambah Transaksi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-transaction-form">
+                    <div class="form-group">
+                        <label for="penerima">Alamat Wallet Admin</label>
+                        <input type="text" class="form-control" id="penerima" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="varietas">Varietas</label>
+                        <select class="form-control" name="" id="kopi">
+                            <option value="">Pilih Kopi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kuantitas">Kuantitas (Gr)</label>
+                        <input type="number" class="form-control" id="kuantitas" required>
+                    </div>
+                    <input type="hidden" id="tanggalPannen" name="">
+                    <input type="hidden" id="productId" name="">
+                    <button type="submit" class="btn btn-primary">Tambah</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script here -->
+<script>
+    const address = JSON.parse(localStorage.getItem("session")).walletAddress;
+    d.getElementById("create-transaction-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const accounts = await ethereum.request({
+            method: 'eth_requestAccounts',
+        });
+        const web3 = new Web3(window.ethereum);
+        const address = JSON.parse(localStorage.getItem("address"));
+        const abi = JSON.parse(localStorage.getItem("abi"));
+        const contract = new web3.eth.Contract(abi, address.address)
+        const userTransaction = await contract.methods.getTransactionByWallet(accounts[0]).call();
+
+        const penerima = d.getElementById("penerima").value;
+        const kopiID = d.getElementById("kopi").value;
+        const varietas = userTransaction.find((e) => e.kopiID === kopiID).varietas
+        const kuantitas = d.getElementById("kuantitas").value;
+        const tanggalPanen = userTransaction.find((e) => e.kopiID === kopiID).tanggalPanen;
+        const tanggalTransaksi = userTransaction.find((e) => e.kopiID === kopiID).tanggalTransaksi;
+        const productId = `${userTransaction.find((e) => e.kopiID === kopiID).produkID}`
+        // const kopiID = ``
+        // web3 process
+        console.log(userTransaction.find((e) => e.kopiID === kopiID))
+
+        try {
+            const result = await contract.methods.addTransaksi(kopiID, varietas, kuantitas, penerima, tanggalPanen, productId).send({ from: accounts[0] });
+            alert("Berhasil melakukan transaksi")
+            window.location.reload()
+        } catch (error) {
+            console.log(error)
+            alert("terjadi kesalahan " + error.toString());
+        }
+    })
+
+    window.onload = async () => {
+        const accounts = await ethereum.request({
+                method: 'eth_requestAccounts',
+            });
+            const web3 = new Web3(window.ethereum);
+            const address = JSON.parse(localStorage.getItem("address"));
+            const abi = JSON.parse(localStorage.getItem("abi"));
+            const contract = new web3.eth.Contract(abi, address.address)
+
+            let userTransaction = await contract.methods.getTransactionByWallet(accounts[0]).call();
+                userTransaction  = await userTransaction.filter((value, index, self) => {
+                        return index === self.findIndex((t) => {
+                            return t.kopiID.toLowerCase() === value.kopiID.toLowerCase()
+                        })
+                    })
+
+            let appendSelect = "<option value='' >Pilih Kopi</option>";
+            for (const iterator of userTransaction) {
+                appendSelect += `
+                <option value="${iterator.kopiID}">${iterator.varietas}</option>
+            `
+            }
+            d.getElementById("tanggalPannen").value = userTransaction.tanggalPanen
+            d.getElementById("productId").value = userTransaction.produkID
+            d.getElementById("kopi").innerHTML = appendSelect;
+    }
+
+</script>

@@ -1,0 +1,135 @@
+<script>
+
+    async function getUserByAddress(address) {
+        const { contract, accounts } = await authorization();
+
+        const user = await contract.methods.getUserDetail(address).call();
+        return user
+    }
+    async function getTransaction(type, status) {
+        const { contract, accounts } = await authorization();
+
+        const transaction = await contract.methods.getTransactionByWallet(accounts[0]).call()
+        const petani = await getUserByAddress(accounts[0])
+        const transaction_status = ["TERTUNDA", "TERKONFIRMASI"];
+        let historyTransaction = []
+        let html = ""
+        switch (type) {
+            case "IN":
+                for (const key of transaction) {
+                    if (key.penerima === accounts[0]) {
+                        historyTransaction.push(key)
+                    }
+                }
+                document.getElementById("transaction").innerHTML = await Promise.all(historyTransaction.map(async (e) => {
+                    const user = await getUserByAddress(e.penerima)
+                    if (status === "TERKONFIRMASI") {
+                        if (e.status == 1) {
+                            return `
+                            <tr>
+                                <td>${e.kopiID}</td>
+                                <td>${e.kopiID}</td>
+                            </tr>
+                            `
+                        }
+                    } else {
+                        if (e.status == 0) {
+                            return `
+                            <tr>
+                                <td>${e.kopiID}</td>
+                                <td>${e.kopiID}</td>
+                            </tr>
+                            `
+                        }
+                    }
+
+                }))
+                break
+            case "OUT":
+                for (const key of transaction) {
+                    if (key.pengirim === accounts[0]) {
+                        historyTransaction.push(key)
+                    }
+                }
+        // console.log("transaction ", historyTransaction)
+
+                const row = await Promise.all(historyTransaction.map(async (e) => {
+
+
+                    const user = await getUserByAddress(e.penerima)
+
+                    if (status === "TERKONFIRMASI") {
+                        if (e.status == 1) {
+                            html += `
+                                <tr>
+                                    <td>${e.kopiID}</td>
+                                    <td>${e.transaksiID}</td>
+                                    <td>${petani.nama}</td>
+                                    <td>${petani.alamat}</td>
+                                    <td>${e.varietas}</td>
+                                    <td>${e.kuantitas}</td>
+                                        <td>${new Date(Number(e.tanggalPanen))}</td>
+
+                                    <td>${new Date(Number(e.tanggalTransaksi))}</td>
+                                    <td>${user.nama}</td>
+                                    <td>${user.alamat}</td>
+                                    <td>${transaction_status[parseInt(e.status)]}</td>
+                                </tr>
+                    `
+                        }
+                    } else if(status === "TERTUNDA") {
+                        if (e.status == 0) {
+                            html+= `
+                                <tr>
+                                    <td>${e.kopiID}</td>
+                                    <td>${e.transaksiID}</td>
+                                    <td>${petani.nama}</td>
+                                    <td>${petani.alamat}</td>
+                                    <td>${e.varietas}</td>
+                                    <td>${e.kuantitas}</td>
+                                   <td>${new Date(Number(e.tanggalPanen))}</td>
+
+                                    <td>${new Date(Number(e.tanggalTransaksi))}</td>
+                                    <td>${user.nama}</td>
+                                    <td>${user.alamat}</td>
+                                    <td>${transaction_status[parseInt(e.status)]}</td>
+                                </tr>
+                    `
+                        }
+                    } else {
+
+                        html+= `
+                                <tr>
+                                    <td>${e.kopiID}</td>
+                                    <td>${e.transaksiID}</td>
+                                    <td>${petani.nama}</td>
+                                    <td>${petani.alamat}</td>
+                                    <td>${e.varietas}</td>
+                                    <td>${e.kuantitas}</td>
+                                    <td>${new Date(Number(e.tanggalPanen))}</td>
+
+                                    <td>${new Date(Number(e.tanggalTransaksi))}</td>
+                                    <td>${user.nama}</td>
+                                    <td>${user.alamat}</td>
+                                    <td>${transaction_status[parseInt(e.status)]}</td>
+                                </tr>
+                    `
+                    }
+
+
+                }))
+                document.getElementById("transaction").innerHTML = html
+                break
+        }
+    }
+    // Main call
+    (async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const params = urlParams.get('type') || 'IN';
+        const status = urlParams.get('status')
+        document.getElementById("status").innerHTML = status
+        await getTransaction(params, status)
+
+        
+    })()
+</script>

@@ -1,0 +1,68 @@
+<div class="modal fade" id="addTransactionModal" tabindex="-1" role="dialog" aria-labelledby="addTransactionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTransactionModalLabel">Tambah Transaksi</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="create-transaction-form">
+                    <div class="form-group">
+                        <label for="penerima">Alamat Wallet Produser</label>
+                        <input type="text" class="form-control" id="penerima" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="varietas">Varietas</label>
+                        <select class="form-control" name="" id="kopi">
+                            <option value="">Pilih Kopi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="kuantitas">Kuantitas (KG)</label>
+                        <input type="number" class="form-control" id="kuantitas" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Tambah</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script here -->
+<script>
+    const address = JSON.parse(localStorage.getItem("session")).walletAddress;
+    d.getElementById("create-transaction-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const accounts = await ethereum.request({
+            method: 'eth_requestAccounts',
+        });
+        const web3 = new Web3(window.ethereum);
+        const address = JSON.parse(localStorage.getItem("address"));
+        const abi = JSON.parse(localStorage.getItem("abi"));
+        const contract = new web3.eth.Contract(abi, address.address)
+        const userTransaction = await contract.methods.getTransactionByWallet(accounts[0]).call();
+
+        const penerima = d.getElementById("penerima").value;
+        const kopiID = d.getElementById("kopi").value;
+        const varietas = userTransaction.find((e) => e.kopiID === kopiID).varietas
+        const kuantitas = d.getElementById("kuantitas").value;
+        const tanggalPanen = userTransaction.find((e) => e.kopiID === kopiID).tanggalPanen;
+        // const kopiID = `${varietasKopi.substr(0, 1)}${tanggalPanen.replace(/-/g, "")}`
+        // web3 process
+      
+        
+        try {
+            const result = await contract.methods.addTransaksi(kopiID, varietas, kuantitas, penerima, tanggalPanen,"").send({ from: accounts[0] });
+            alert("Berhasil melakukan transaksi")
+            window.location.reload()
+        } catch (error) {
+            console.log(error)
+            alert("terjadi kesalahan " + error.toString());
+        }
+    })
+
+   
+</script>

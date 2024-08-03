@@ -1,0 +1,31 @@
+<div class="sidebar">
+    <img src="/images/kopi-1.png" alt="Admin Photo">
+    <div class="admin-info">
+        <div id="wallet" class="wallet">0xd5176Ca34976a0840457570AfA44033D2bA4D722</div>
+        <div id="role" class="role"><b>Admin</b></div>
+    </div>
+    <ul>
+        <li <% if(active == "dashboard"){%> class="active"<%}%>><a href="/admin/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+        <li>
+            <a href=""><span class="icon">📥</span> Transaksi Masuk</a>
+            <ul>
+                <li id="tertunda"><a href="/admin/transaction?type=IN&status=TERTUNDA">Tertunda</a></li>
+                <li id="terkonfirmasi"><a href="/admin/transaction?type=IN&status=TERKONFIRMASI">Terkonfirmasi</a></li>
+            </ul>
+        </li>
+        <li <% if(active == "users"){%> class="active"<%}%>><a href="/admin/users"><span class="icon">👤</span> User</a></li>
+        <li><a href="/" id="logout"><span class="icon">🚪</span> Logout</a></li>
+    </ul>
+</div>
+
+<script>
+    const session = (localStorage.getItem("session")) ? JSON.parse(localStorage.getItem("session")) : {}
+    const d = document
+    if(session.roleName !== "ADMIN") {
+        alert("Unauthorized")
+         window.location.href = "/"
+    }
+
+    
+    d.getElementById("wallet").innerHTML = session.walletAddress
+</script>

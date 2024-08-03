@@ -1,0 +1,96 @@
+<div class="transaction-table">
+    <h2 style="font-size: 14px; font-weight: bold;">DETAIL SEMUA TRANSAKSI</h2>
+    <div class="transaction-table-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Transaksi</th>
+                    <th>Petani</th>
+                    <th>Pengepul</th>
+                    <th>Produsen</th>
+                    <th>Seller</th>
+                    <th>Status</th>
+                    <th id="aksi">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTable">
+                
+                <!-- Tambahkan baris transaksi lainnya sesuai kebutuhan -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    (async () => {
+        // Tambahkan script Anda
+        const abi = await fetch("/sc/abi.json").then((res) => res.json());
+        const address = await fetch("/sc/address.json").then((res) => res.json());
+        const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+
+        localStorage.setItem("abi", JSON.stringify(abi))
+        localStorage.setItem("address", JSON.stringify(address))
+        localStorage.setItem("bytecode", bytecode)
+        const status = ["DALAM PROSES","SELESAI"];
+
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+            try {
+                // Request account access if needed
+
+                // We use the MetaMask provider to create a new Web3 instance
+                const web3 = new Web3(window.ethereum);
+
+                // Get the user's Ethereum address
+                const accounts = await web3.eth.getAccounts();
+                const userAddress = accounts[0];
+                localStorage.setItem("active-user", userAddress);
+                let user = JSON.parse(localStorage.getItem("session"));
+                const contract = new web3.eth.Contract(abi, address.address);
+                try {
+                    let transaction = await contract.methods.getTransactionByWallet(userAddress).call();
+                    // console.log(transaction)
+                    transaction = transaction.filter((value, index, self) => {
+                        index === self.findIndex((t) => {
+                            t.kopiID === value.kopiID
+                        })
+                    })
+                    let bind_tx = Promise.all(transaction.map(async (e) => {
+                        let status_petani = "DALAM PROSES";
+                        let status_pengepul = "DALAM PROSES";
+                        if(user.walletAddress === e.pengirim) {
+                            status_pengepul = status[e.status];
+                            status_petani = "SELESAI";
+                        }
+                        const history = await contract.methods.getHistoryTransaksi(e.kopiID).call()
+                        let html = ''
+                        let append = await history.map((e) => {
+                            return `
+                                <td>${status[e.status]}</td>
+                            `
+                        })
+                        return `
+                            <tr>
+                                <td>${e.kopiID}</td>
+                            </tr>
+                        `
+                    }))
+                    d.getElementById("transactionTable").innerHTML = await bind_tx
+
+                   
+                } catch (error) {
+                    console.log(error)
+                    alert("Gagal Login, Terjadi kesalahan. Hubungi admin dan pastikan akun anda telah terdaftar");
+                }
+
+
+                // Display the user's address
+                // document.getElementById('userAddress').innerText = `Logged in as: ${userAddress}`;
+            } catch (error) {
+                console.error("User denied account access or there was an error: ", error);
+            }
+        } else {
+            console.log('MetaMask is not installed. Please install it to use this app.');
+        }
+    })()
+</script>

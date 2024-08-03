@@ -1,0 +1,57 @@
+<div class="sidebar">
+    <img src="/images/kopi-1.png" alt="Pengepul Photo">
+    <div class="produser-info">
+        <div id="name" class="name">Rina</div>
+        <div id="wallet" class="wallet">0xd5176Ca34976a0840457570AfA44033D2bA4D722</div>
+        <div id="role" class="role">Petani</div>
+    </div>
+    <ul>
+        <li  id="dashboard"><a href="/pengepul/dashboard"><span class="icon">🏠</span> Dashboard</a></li>
+        <li >
+            <a  ><span class="icon">📤</span> Transaksi Keluar</a>
+            <ul>
+                <li id="out-tertunda" > <a href="/pengepul/transaction?type=OUT&status=TERTUNDA">Tertunda</a></li>
+                <li id="out-terkonfirmasi"><a href="/pengepul/transaction?type=OUT&status=TERKONFIRMASI">Terkonfirmasi</a></li>
+            </ul>
+        </li>
+        <li>
+            <a ><span class="icon">📥</span> Transaksi Masuk</a>
+            <ul>
+                <li id="in-tertunda"><a href="/pengepul/transaction?type=IN&status=TERTUNDA">Tertunda</a></li>
+                <li id="in-terkonfirmasi"><a href="/pengepul/transaction?type=IN&status=TERKONFIRMASI">Terkonfirmasi</a></li>
+            </ul>
+        </li>
+        <li><a href="/" id="logout"><span class="icon">🚪</span> Logout</a></li>
+    </ul>
+</div>
+
+<script>
+    const session = (localStorage.getItem("session")) ? JSON.parse(localStorage.getItem("session")) : {}
+    const d = document
+    if(session.roleName !== "PENGEPUL") {
+        alert("Unauthorized")
+         window.location.href = "/user/login"
+    }
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = urlParams.get('type') || 'IN';
+    const status = urlParams.get('status');
+
+    if(params === "OUT" && status === "TERTUNDA") {
+        document.getElementById("out-tertunda").classList.add("active")
+    } else if (params === "OUT" && status === "TERKONFIRMASI") {
+        document.getElementById("out-terkonfirmasi").classList.add("active")
+    } else if(params === "IN" && status === "TERTUNDA") {
+        document.getElementById("in-tertunda").classList.add("active")
+    } else if(params === "IN" && status === "TERKONFIRMASI") {
+        document.getElementById("in-terkonfirmasi").classList.add("active")
+
+    }else {
+        document.getElementById("dashboard").classList.add("active")
+    }
+
+    d.getElementById("name").innerHTML = session.nama
+    d.getElementById("wallet").innerHTML = session.walletAddress
+    d.getElementById("role").innerHTML = session.roleName
+
+    
+</script>

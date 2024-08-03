@@ -1,0 +1,1072 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_kopiID",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_varietas",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_kuantitas",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tanggalProduksi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tanggalKadaluarsa",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_produkID",
+				"type": "string"
+			}
+		],
+		"name": "addProduk",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_kopiID",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_varietas",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_kuantitas",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_penerima",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_tanggalPanen",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_productID",
+				"type": "string"
+			}
+		],
+		"name": "addTransaksi",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_kopiID",
+				"type": "string"
+			}
+		],
+		"name": "konfirmasiTransaksi",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "OwnableInvalidOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "OwnableUnauthorizedAccount",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "fromAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "toAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "productId",
+				"type": "string"
+			}
+		],
+		"name": "AddTransactionChain",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_walletAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_roleID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_nama",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_telepon",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_alamat",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_title",
+				"type": "string"
+			}
+		],
+		"name": "addUser",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "produkID",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "varietas",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "kuantitas",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tanggalProduksi",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tanggalKadaluarsa",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "pemilik",
+				"type": "address"
+			}
+		],
+		"name": "ProdukDitambahkan",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "penerima",
+				"type": "address"
+			}
+		],
+		"name": "TransaksiDikonfirmasi",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "varietas",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "kuantitas",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "pengirim",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "penerima",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tanggalTransaksi",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "status",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "produkID",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "tanggalPanen",
+				"type": "uint256"
+			}
+		],
+		"name": "TransaksiDitambahkan",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "roleName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "roleID",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "nama",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "telepon",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "alamat",
+				"type": "string"
+			}
+		],
+		"name": "UserDitambahkan",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "allUsers",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "roleName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "roleID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "nama",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "telepon",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "alamat",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_kopiID",
+				"type": "string"
+			}
+		],
+		"name": "getHistoryTransaksi",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "kopiID",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "varietas",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kuantitas",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "pengirim",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "penerima",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tanggalTransaksi",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum CoffeeSupplyChain.Status",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "produkID",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tanggalPanen",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "transaksiID",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct CoffeeSupplyChain.Transaksi[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_produkID",
+				"type": "string"
+			}
+		],
+		"name": "getProduk",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "produkID",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "kopiID",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kuantitas",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tanggalProduksi",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tanggalKadaluarsa",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "pemilik",
+						"type": "address"
+					}
+				],
+				"internalType": "struct CoffeeSupplyChain.Produk",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			}
+		],
+		"name": "getTransactionByWallet",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "kopiID",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "varietas",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "kuantitas",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "pengirim",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "penerima",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tanggalTransaksi",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum CoffeeSupplyChain.Status",
+						"name": "status",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "produkID",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tanggalPanen",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "transaksiID",
+						"type": "bytes32"
+					}
+				],
+				"internalType": "struct CoffeeSupplyChain.Transaksi[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			}
+		],
+		"name": "getUserDetail",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "walletAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "roleName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "roleID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "nama",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "telepon",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "alamat",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "title",
+						"type": "string"
+					}
+				],
+				"internalType": "struct CoffeeSupplyChain.User",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getUsers",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "address",
+						"name": "walletAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "string",
+						"name": "roleName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "roleID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "nama",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "telepon",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "alamat",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "title",
+						"type": "string"
+					}
+				],
+				"internalType": "struct CoffeeSupplyChain.User[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "produk",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "produkID",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "kuantitas",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalProduksi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalKadaluarsa",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "pemilik",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "produkTransaksi",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "transaction_history",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "varietas",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "kuantitas",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "pengirim",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "penerima",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalTransaksi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum CoffeeSupplyChain.Status",
+				"name": "status",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "produkID",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalPanen",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "transaksiID",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "transaksi",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "varietas",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "kuantitas",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "pengirim",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "penerima",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalTransaksi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum CoffeeSupplyChain.Status",
+				"name": "status",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "produkID",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalPanen",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "transaksiID",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "user_transaction",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "kopiID",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "varietas",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "kuantitas",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "pengirim",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "penerima",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalTransaksi",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum CoffeeSupplyChain.Status",
+				"name": "status",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "produkID",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tanggalPanen",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "transaksiID",
+				"type": "bytes32"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "users",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "walletAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "roleName",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "roleID",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "nama",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "telepon",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "alamat",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "title",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]

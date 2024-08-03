@@ -1,0 +1,72 @@
+<script>
+
+
+    async function smartContract() {
+        const abi = await fetch("/sc/abi.json").then((res) => res.json());
+        const address = await fetch("/sc/address.json").then((res) => res.json());
+        const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+        return {
+            abi,
+            address,
+            bytecode,
+        }
+    }
+
+    async function authorization() {
+        const { abi, address } = await smartContract()
+        await ethereum.request({ method: 'eth_requestAccounts' });
+
+        // We use the MetaMask provider to create a new Web3 instance
+        const web3 = new Web3(window.ethereum);
+
+        // Get the user's Ethereum address
+        const accounts = await web3.eth.getAccounts();
+        const contract = new web3.eth.Contract(abi, address.address);
+
+        const user = await contract.methods.getUserDetail(accounts[0]).call();
+
+        if(user.roleName !== "PRODUSER") {
+            alert("Unauthorized")
+            return window.location.href = "/user/login"
+        }
+
+        return {
+            web3,
+            accounts, 
+            contract
+        }
+    }
+
+    (async () => {
+        await authorization();
+    })()
+
+ 
+
+    document.getElementById("logout").addEventListener("click", function () {
+        window.location.href = "index.html";
+    });
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+        var filter = this.value.toUpperCase();
+        var rows = document.querySelectorAll('.transaction-table tbody tr');
+
+        rows.forEach(function (row) {
+            var cells = row.getElementsByTagName('td');
+            var match = false;
+
+            for (var i = 0; i < cells.length; i++) {
+                if (cells[i].innerText.toUpperCase().indexOf(filter) > -1) {
+                    match = true;
+                    break;
+                }
+            }
+
+            if (match) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+</script>

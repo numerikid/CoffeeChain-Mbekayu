@@ -1,0 +1,189 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #ffffff;
+    color: #74512d;
+    overflow-x: hidden;
+}
+.navbar {
+    background-color: #f8f4e1;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #d8b18a;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
+}
+.navbar .logo {
+    font-family: 'Yatra One', cursive;
+    font-size: 24px;
+    color: #74512d;
+}
+.navbar .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    color: #74512d;
+    font-weight: bold;
+}
+.sidebar {
+    background-color: #f8f4e1;
+    width: 250px;
+    height: calc(100vh - 56px);
+    position: fixed;
+    top: 56px;
+    padding-top: 20px;
+    border-right: 1px solid #d8b18a;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.sidebar img {
+    width: 100px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 10px;
+}
+.sidebar .petani-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.sidebar .petani-info .name {
+    font-size: 16px;
+    font-weight: bold;
+}
+.sidebar .petani-info .wallet {
+    font-size: 12px;
+    word-break: break-all;
+}
+.sidebar .petani-info .role {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+.sidebar ul li {
+    padding: 10px 0;
+    text-align: left;
+}
+.sidebar ul li a {
+    color: #74512d;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+.sidebar ul li a .icon {
+    margin-right: 10px;
+}
+.sidebar ul li.active {
+    background-color: #f8dfc6;
+    font-weight: bold;
+}
+.sidebar ul ul {
+    padding-left: 15px;
+}
+.content {
+    margin-left: 270px;
+    padding: 20px;
+    padding-top: 80px;
+}
+.header {
+    margin-bottom: 20px;
+}
+.header h1 {
+    font-size: 20px;
+    color: #74512d;
+    font-weight: bold;
+}
+.stats {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.stat {
+    background-color: #f8f4e1;
+    border: 1px solid #d8b18a;
+    border-radius: 10px;
+    padding: 10px;
+    text-align: center;
+    width: 20%;
+}
+.stat h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #74512d;
+}
+.stat p {
+    margin: 0;
+    font-size: 14px;
+    color: #74512d;
+}
+.transaction-table {
+    background-color: #ffffff;
+    border: 1px solid #d8b18a;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 10px;
+}
+.transaction-table table {
+    width: 100%;
+    color: #74512d;
+    font-size: 18px;
+}
+.transaction-table table th, .transaction-table table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #d8b18a;
+    font-size: 14px;
+}
+.transaction-table table th {
+    background-color: #d8b18a;
+    color: #ffffff;
+}
+.transaction-table table tr:nth-child(even) {
+    background-color: #f8f4e1;
+}
+.transaction-table table tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+.transaction-table-body {
+    max-height: 500px;
+    overflow-y: auto;
+}
+.header-with-search {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.btn-add-transaction {
+    background-color: #74512d;
+    color: #ffffff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+.btn-detail {
+    background-color: #007bff;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.search-container {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.search-container input {
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #d8b18a;
+    border-radius: 5px;
+}

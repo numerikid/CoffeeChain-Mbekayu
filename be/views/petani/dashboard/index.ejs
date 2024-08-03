@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <title>Dashboard Petani - KopiChain</title>
+    <!-- Head include EJS -->
+    <%- include("../../components/head")%>
+    <link rel="stylesheet" href="/styles/index.css">
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo">KOPI MBEKAYU</div>
+        <div class="title">SISTEM TRACEABILITY</div>
+    </div>
+    <%-include('../components/sidebar')%>
+    <div class="content">
+        <div class="header">
+            <h1>DASHBOARD PETANI</h1>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <h3>Transaksi Keluar</h3>
+                <p>Jumlah Transaksi</p>
+                <h3 id="transaction-out"></h3>
+            </div>
+        </div>
+        <div class="header-with-search">
+            <button class="btn-add-transaction" data-toggle="modal" data-target="#addTransactionModal">Tambah
+                Transaksi</button>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+            </div>
+        </div>
+        <!-- transaction table -->
+        <%-include("components/table")%>
+
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <%-include("components/modal")%>
+
+    <script src='https://code.jquery.com/jquery-3.5.1.slim.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js'></script>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+    <%- include("../../components/script.ejs")%>
+    <%- include("components/script.ejs")%>
+
+    <script>
+
+        async function getUserByAddress(address) {
+            const { contract, accounts } = await authorization();
+
+            const user = await contract.methods.getUserDetail(address).call();
+            return user
+        }
+        async function getTransaction(status) {
+            const { contract, accounts } = await authorization();
+
+            const transaction = await contract.methods.getTransactionByWallet(accounts[0]).call()
+            const petani = await getUserByAddress(accounts[0])
+            const transaction_status = ["TERTUNDA", "TERKONFIRMASI"];
+            let historyTransaction = []
+            switch (status) {
+                case "IN":
+                    for (const key of transaction) {
+                        if (key.penerima === accounts[0]) {
+                            historyTransaction.push(key)
+                        }
+                    }
+                    return historyTransaction
+
+                case "OUT":
+                    for (const key of transaction) {
+                        if (key.pengirim === accounts[0]) {
+                            historyTransaction.push(key)
+                        }
+                    }
+                    return historyTransaction
+
+            }
+        }
+
+        (async () => {
+            const transaction_out = await getTransaction("OUT")
+            console.log("transaction ", transaction_out.length)
+            document.getElementById("transaction-out").innerHTML = transaction_out.length
+        })()
+    </script>
+</body>
+
+</html>
