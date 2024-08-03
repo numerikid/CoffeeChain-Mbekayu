@@ -1,4 +1,4 @@
 [[redirects]]
 from = "/*"
-to = "/view/index.ejs"
+to = "/be/views/index.ejs"
 status = 200
