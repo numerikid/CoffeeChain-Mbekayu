@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+    <title>Time Line Transaksi - KopiChain</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Yatra+One&display=swap"
+        rel="stylesheet">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #ffffff;
+            color: #74512d;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background-color: #f8f4e1;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #d8b18a;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            top: 0;
+        }
+
+        .navbar .logo {
+            font-family: 'Yatra One', cursive;
+            font-size: 24px;
+            color: #74512d;
+        }
+
+        .navbar .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            color: #74512d;
+            font-weight: bold;
+        }
+
+        .content {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 20px;
+        }
+
+        .timeline-container {
+            flex: 2;
+            margin-right: 20px;
+            max-width: 600px;
+        }
+
+        .product-details {
+            flex: 1;
+            background: #f8f4e1;
+            border: 1px solid #d8b18a;
+            border-radius: 10px;
+            padding: 20px;
+            height: fit-content;
+            max-width: 300px;
+            margin-top: 120px;
+        }
+
+        .header {
+            margin-top: 80px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #74512d;
+            font-weight: bold;
+        }
+
+        .product-details h2 {
+            text-align: center;
+            font-size: 24px;
+            color: #74512d;
+            font-weight: bold;
+            padding-bottom: 10px;
+        }
+
+        .timeline {
+            border-left: 3px solid #d8b18a;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .timeline li {
+            margin: 2px 0;
+            /* Further reduced margin */
+            position: relative;
+        }
+
+        .timeline li:before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d8b18a;
+            border: 2px solid #74512d;
+            position: absolute;
+            left: -8px;
+            top: 12px;
+        }
+
+        .timeline li .content {
+            padding-left: 20px;
+            display: block;
+        }
+
+        .timeline li .content strong,
+        .timeline li .content div {
+            display: block;
+            margin-bottom: 0px;
+            /* Reduced to zero to tighten the spacing */
+        }
+
+        .status-confirmed {
+            background-color: #3b82f6;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="logo">KOPI MBEKAYU</div>
+        <div class="title">SISTEM TRACEABILITY</div>
+    </div>
+    <div class="content">
+        <div class="timeline-container">
+            <div class="header">
+                <h1>Time Line Transaksi</h1>
+            </div>
+            <ul class="timeline" id="timeline">
+                
+            </ul>
+        </div>
+        <div class="product-details">
+            <h2>Detail Produk</h2>
+            <p><strong >ID Produk:</strong> <br> <span id="productId"></span> </p>
+            <p><strong >Varietas:</strong> <br> <span id="varietas"></span></p>
+            <p><strong >Kuantitas:</strong> <br> <span id="kuantitas"></span>(gr)</p>
+            <p><strong >Tanggal Produksi:</strong> <br> <span id="tanggalProduksi"></span></p>
+            <p><strong >Tanggal Kadaluwarsa:</strong> <br> <span id="tanggalKadaluwarsa"></span></p>
+            <p><strong >Status:</strong><br> <span id="status"> </span></p>
+        </div>
+    </div>
+    <script src='https://code.jquery.com/jquery-3.5.1.slim.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js'></script>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap-4.5.2/js/bootstrap.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.3.6/dist/web3.min.js"></script>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        (async () => {
+            const abi = await fetch("/sc/abi.json").then((res) => res.json());
+            const address = await fetch("/sc/address.json").then((res) => res.json());
+            const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+
+            await ethereum.request({ method: 'eth_requestAccounts' });
+
+            // We use the MetaMask provider to create a new Web3 instance
+            const web3 = new Web3(window.ethereum);
+
+            // Get the user's Ethereum address
+            const accounts = await web3.eth.getAccounts();
+            // console.log(accounts)
+            const userAddress = accounts[0];
+
+            localStorage.setItem("active-user", userAddress);
+
+            const contract = new web3.eth.Contract(abi, address.address);
+
+            try {
+                let _product = await contract.methods.getProduk(productId).call();
+                let history = await contract.methods.getHistoryTransaksi(_product.kopiID).call();
+                console.log(history)
+
+                    history = history.filter((obj, index) => {
+                        return history.findIndex((item) => item.pengirim === obj.pengirim) === index
+                    })
+                let timeline = ""
+                for (const iterator of history) {
+                    const pengirim = await contract.methods.getUserDetail(iterator.pengirim).call();
+                    let scenario = ""
+                    console.log(pengirim)
+                    if(parseInt(pengirim.roleID) === 1) {
+                        scenario = "memetik biji kopi"
+                    }else if(parseInt(pengirim.roleID) === 2) {
+                        scenario = "Membeli biji kopi"
+                    } else if(parseInt(pengirim.roleID) === 3) {
+                        scenario = "Mengolah biji kopi"
+                    } else if(parseInt(pengirim.roleID) === 4) {
+                        scenario = "Membeli produk kopi"
+                    }
+                    timeline += `
+                        <li>
+                            <div class="content">
+                                <strong>${pengirim.nama + " " + scenario}</strong>
+                                <div>${new Date(Number(iterator.tanggalPanen) ).toDateString()}</div>
+                                <div>${pengirim.alamat}</div>
+                            </div>
+                        </li>
+                    `
+                }
+                const product = await contract.methods.getProduk(history[history.length - 1].produkID).call();
+                let transaction_product = history[history.length - 1];
+                document.getElementById("timeline").innerHTML = timeline
+                document.getElementById("productId").innerText = transaction_product.produkID;
+                document.getElementById("varietas").innerText = transaction_product.varietas
+                document.getElementById("kuantitas").innerHTML = transaction_product.kuantitas
+                document.getElementById("tanggalProduksi").innerHTML = new Date(Number(product.tanggalProduksi)).toDateString()
+                document.getElementById("tanggalKadaluwarsa").innerText = new Date(Number(product.tanggalKadaluarsa)).toDateString()
+                document.getElementById("status").innerHTML = transaction_product.status == 0 ? "<button class='btn btn-danger'>Tertunda</button>" : `<button class='btn btn-primary'>Terkonfirmasi</button>`
+            } catch (error) {
+                console.error(error)
+                alert("Terjadi kesalahan sistem " + error);
+            }
+        })()
+    </script>
+</body>
+
+</html>
