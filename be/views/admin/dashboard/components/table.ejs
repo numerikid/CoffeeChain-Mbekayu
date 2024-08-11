@@ -12,6 +12,7 @@
                     <th>Produsen</th>
                     <th>Seller</th>
                     <th>Status</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody id="transactionTable">
@@ -105,7 +106,8 @@
                                 <td>${e.produkID}</td>
                                 <td>${e.kopiID}</td>
                                 <td>${e.transaksiID}</td>
-                                ${(await append.length >= 5) ? `${await append}<td>${admin_status[e.status]}</td>` : await append}
+                                ${await append}
+                                <td><a class="btn btn-primary" href="/trace?id=${e.produkID}">Detail</a></td>
                             </tr>
                         `
                     }))

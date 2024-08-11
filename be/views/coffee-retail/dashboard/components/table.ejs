@@ -104,9 +104,16 @@
                             status_pengepul = status[e.status];
                             status_petani = "SELESAI";
                         }
-                        const history = await contract.methods.getHistoryTransaksi(e.kopiID).call()
-                        
+                        let history = await contract.methods.getHistoryTransaksi(e.kopiID).call()
+                            history = history
                         let append = ""
+                        console.log(history)
+                        // history = await history.filter((value, index, self) => {
+                        // return index === self.findIndex((t) => {
+                        //         return t.pengirim === value.pengirim 
+                        //     })
+                        // })
+
                         await history.map((e) => {
                             append += `
                                 <td>${status[e.status]}</td>
@@ -118,6 +125,7 @@
                                 <td>${e.kopiID}</td>
                                 <td>${e.transaksiID}</td>
                                 ${await append}
+                                <td><a href="/trace?id=${e.produkID}" ${(e.produkID === "") ? 'disabled' : ''}>Detail</a></td>
                             </tr>
                         `
                     }))

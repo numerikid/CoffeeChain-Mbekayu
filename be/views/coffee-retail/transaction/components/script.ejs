@@ -3,7 +3,7 @@
     async function getUserByAddress(address) {
         const { contract, accounts } = await authorization();
         try {
-            const user = await contract.methods.getUserDetail(accounts[0].toLowerCase()).call();
+            const user = await contract.methods.getUserDetail(address).call();
             return user
         } catch (error) {
             console.error(error)
@@ -38,6 +38,7 @@
                     }
                 }
                 document.getElementById("transaction").innerHTML = await Promise.all(historyTransaction.map(async (e) => {
+                    console.log("trace ", e.pengirim)
                     const user = await getUserByAddress(e.pengirim)
                     if (e.penerima === accounts[0]) {
                         if (status === "TERKONFIRMASI") {
@@ -162,6 +163,10 @@
         document.getElementById("status").innerText = ` - ${status || ''}`
         document.getElementById("title").innerText = `${(params === "IN") ? "Transaksi Masuk " : "Transaksi Keluar" }`
         if(status === "TERKONFIRMASI" && params === "IN" || status === "TERTUNDA" && params === "OUT" || status === "TERKONFIRMASI" && params === "OUT") {
+            document.getElementById("aksi").setAttribute("hidden", true);
+        }
+
+        if(status === "TERTUNDA" && params === "OUT") {
             document.getElementById("aksi").setAttribute("hidden", true);
         }
         await getTransaction(params, status)

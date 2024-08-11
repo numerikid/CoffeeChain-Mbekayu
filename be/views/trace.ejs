@@ -198,11 +198,12 @@
             try {
                 let _product = await contract.methods.getProduk(productId).call();
                 let history = await contract.methods.getHistoryTransaksi(_product.kopiID).call();
-                console.log(history)
 
                     history = history.filter((obj, index) => {
                         return history.findIndex((item) => item.pengirim === obj.pengirim) === index
                     })
+                    const product = await contract.methods.getProduk(history[history.length - 1].produkID).call();
+                
                 let timeline = ""
                 for (const iterator of history) {
                     const pengirim = await contract.methods.getUserDetail(iterator.pengirim).call();
@@ -221,13 +222,12 @@
                         <li>
                             <div class="content">
                                 <strong>${pengirim.nama + " " + scenario}</strong>
-                                <div>${new Date(Number(iterator.tanggalPanen) ).toDateString()}</div>
+                                <div>${(pengirim.roleID == 3 )? new Date(Number(product.tanggalProduksi)).toDateString() :new Date(Number(iterator.tanggalPanen) ).toDateString()}</div>
                                 <div>${pengirim.alamat}</div>
                             </div>
                         </li>
                     `
                 }
-                const product = await contract.methods.getProduk(history[history.length - 1].produkID).call();
                 let transaction_product = history[history.length - 1];
                 document.getElementById("timeline").innerHTML = timeline
                 document.getElementById("productId").innerText = transaction_product.produkID;

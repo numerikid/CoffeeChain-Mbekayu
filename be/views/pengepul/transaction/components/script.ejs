@@ -162,6 +162,9 @@
         if(status === "TERKONFIRMASI") {
             document.getElementById("aksi").setAttribute("hidden", true);
         }
+        if(params === "OUT" && status === "TERTUNDA") {
+            document.getElementById("aksi").setAttribute("hidden", true);
+        }
         await getTransaction(params, status)
     })()
 </script>

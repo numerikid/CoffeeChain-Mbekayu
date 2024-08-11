@@ -116,7 +116,7 @@
                             if (e.status == 1) {
                                 return `
                                     <tr>
-                                        <td>${e.kopiID}</td>
+                                        <td>${e.produkID}</td>
                                         <td>${e.transaksiID}</td>
                                         <td>${petani.nama}</td>
                                         <td>${petani.alamat}</td>
@@ -132,7 +132,7 @@
                         } else if (status === "TERTUNDA" && e.status == 0) {
                             return `
                                     <tr>
-                                        <td>${e.kopiID}</td>
+                                        <td>${e.produkID}</td>
                                         <td>${e.transaksiID}</td>
                                         <td>${petani.nama}</td>
                                         <td>${petani.alamat}</td>
@@ -146,7 +146,7 @@
                         } else {
                             return `
                                     <tr>
-                                        <td>${e.kopiID}</td>
+                                        <td>${e.produkID}</td>
                                         <td>${e.transaksiID}</td>
                                         <td>${petani.nama}</td>
                                         <td>${petani.alamat}</td>
