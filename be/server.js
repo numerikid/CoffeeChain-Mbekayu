@@ -25,7 +25,7 @@ db.connect(err => {
     if (err) {
         console.error('Error connecting to the database:', err);
     } else {
-        console.log('Connected to MySQL database.');
+        console.log('Connected to localhost.');
     }
 });
 
@@ -37,7 +37,7 @@ const mainRoute = require('./routes/main_route');
 mainRoute(app);
 
 // Menjalankan server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.get("/", (req, res) => {
     return res.render("index.ejs")
 })
