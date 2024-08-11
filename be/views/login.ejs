@@ -20,10 +20,14 @@
     <script src="https://cdn.jsdelivr.net/npm/web3/dist/web3.min.js"></script>
     <script>
         document.getElementById('loginButton').addEventListener('click', async () => {
+            // Fetching JSON and text files
+            
+            // Ubah bagian berikut -> Lakukan ke yang lain juga
             // const abi = await fetch("/sc/abi.json").then((res) => res.json());
             // const address = await fetch("/sc/address.json").then((res) => res.json());
             // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
-
+            
+            // Menjadi seperti berikut
             const [abi, address, bytecode] = await Promise.all([
                 fetch("/abi").then((res) => res.json()),
                 fetch("/address").then((res) => res.json()),
