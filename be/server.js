@@ -22,13 +22,13 @@ const db = mysql.createConnection({
 });
 
 // Koneksi ke database MySQL
-db.connect((err) => {
-  if (err) {
-    console.error("Error connecting to the database:", err);
-  } else {
-    console.log("Connected to MySQL database.");
-  }
-});
+// db.connect((err) => {
+//   if (err) {
+//     console.error("Error connecting to the database:", err);
+//   } else {
+//     console.log("Connected to MySQL database.");
+//   }
+// });
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -38,7 +38,7 @@ const mainRoute = require("./routes/main_route");
 mainRoute(app);
 
 // Menjalankan server
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 // Routes for Reading JSON Files -> bagian Berikut
 app.get("/abi", (req, res) => {
