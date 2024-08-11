@@ -23,9 +23,9 @@ const db = mysql.createConnection({
 // Koneksi ke database MySQL
 db.connect(err => {
     if (err) {
-        console.error('Error connecting to the Local Host:', err);
+        console.error('Error connecting to the database:', err);
     } else {
-        console.log('Connected to Local Host.');
+        console.log('Connected to MySQL database.');
     }
 });
 
@@ -37,7 +37,7 @@ const mainRoute = require('./routes/main_route');
 mainRoute(app);
 
 // Menjalankan server
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 3000;
 app.get("/", (req, res) => {
     return res.render("index.ejs")
 })
