@@ -14,12 +14,12 @@ app.use("/styles", express.static("views/assets/styles"));
 app.use("/sc", express.static("sc"));
 
 // Konfigurasi MySQL
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "kopi_skripsi",
-});
+// const db = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "kopi_skripsi",
+// });
 
 // Koneksi ke database MySQL
 // db.connect((err) => {
