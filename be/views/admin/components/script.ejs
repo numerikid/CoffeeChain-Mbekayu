@@ -1,129 +1,129 @@
 <script>
+  async function smartContract() {
+    // const abi = await fetch("/sc/abi.json").then((res) => res.json());
+    // const address = await fetch("/sc/address.json").then((res) => res.json());
+    // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+    // Fetching JSON and text files
 
-    async function smartContract() {
-        // const abi = await fetch("/sc/abi.json").then((res) => res.json());
-        // const address = await fetch("/sc/address.json").then((res) => res.json());
-        // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
-        // Fetching JSON and text files
-            
-            // Ubah bagian berikut -> Lakukan ke yang lain juga
-            // const abi = await fetch("/sc/abi.json").then((res) => res.json());
-            // const address = await fetch("/sc/address.json").then((res) => res.json());
-            // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
-            
-            // Menjadi seperti berikut
-            const [abi, address, bytecode] = await Promise.all([
-                fetch("/abi").then((res) => res.json()),
-                fetch("/address").then((res) => res.json()),
-                fetch("/bytecode").then((res) => res.text())
-            ]);
-        return {
-            abi,
-            address,
-            bytecode,
-        }
+    // Ubah bagian berikut -> Lakukan ke yang lain juga
+    // const abi = await fetch("/sc/abi.json").then((res) => res.json());
+    // const address = await fetch("/sc/address.json").then((res) => res.json());
+    // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+
+    // Menjadi seperti berikut
+    const [abi, address, bytecode] = await Promise.all([
+      fetch("/abi").then((res) => res.json()),
+      fetch("/address").then((res) => res.json()),
+      fetch("/bytecode").then((res) => res.text()),
+    ]);
+    return {
+      abi,
+      address,
+      bytecode,
+    };
+  }
+
+  async function authorization() {
+    const { abi, address } = await smartContract();
+    await ethereum.request({ method: "eth_requestAccounts" });
+
+    // We use the MetaMask provider to create a new Web3 instance
+    const web3 = new Web3(window.ethereum);
+
+    // Get the user's Ethereum address
+    const accounts = await web3.eth.getAccounts();
+    const contract = new web3.eth.Contract(abi, address.address);
+
+    const user = await contract.methods.getUserDetail(accounts[0]).call();
+
+    if (user.roleName !== "ADMIN") {
+      alert("Unauthorized");
+      return (window.location.href = "/");
     }
 
-    async function authorization() {
-        const { abi, address } = await smartContract()
-        await ethereum.request({ method: 'eth_requestAccounts' });
+    return {
+      web3,
+      accounts,
+      contract,
+    };
+  }
 
-        // We use the MetaMask provider to create a new Web3 instance
-        const web3 = new Web3(window.ethereum);
+  (async () => {
+    await authorization();
+  })();
 
-        // Get the user's Ethereum address
-        const accounts = await web3.eth.getAccounts();
-        const contract = new web3.eth.Contract(abi, address.address);
+  document.getElementById("logout").addEventListener("click", function () {
+    window.location.href = "index.html";
+  });
 
-        const user = await contract.methods.getUserDetail(accounts[0]).call();
+  // document.getElementById('searchInput').addEventListener('input', function () {
+  //     var filter = this.value.toUpperCase();
+  //     var rows = document.querySelectorAll('.transaction-table tbody tr');
 
-        if (user.roleName !== "ADMIN") {
-            alert("Unauthorized")
-            return window.location.href = "/"
-        }
+  //     rows.forEach(function (row) {
+  //         var cells = row.getElementsByTagName('td');
+  //         var match = false;
 
-        return {
-            web3,
-            accounts,
-            contract
-        }
+  //         for (var i = 0; i < cells.length; i++) {
+  //             if (cells[i].innerText.toUpperCase().indexOf(filter) > -1) {
+  //                 match = true;
+  //                 break;
+  //             }
+  //         }
+
+  //         if (match) {
+  //             row.style.display = '';
+  //         } else {
+  //             row.style.display = 'none';
+  //         }
+  //     });
+  // });
+
+  async function getUserByAddress(address) {
+    const { contract, accounts } = await authorization();
+
+    const user = await contract.methods.getUserDetail(address).call();
+    return user;
+  }
+
+  async function confirmTransaction(kopiID) {
+    const { contract, accounts } = await authorization();
+
+    try {
+      const user = await contract.methods
+        .konfirmasiTransaksi(kopiID)
+        .send({ from: accounts[0] });
+      alert("berhasil Melakukan konfirmasi");
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      alert(`terjadi kesalahan ${error}`);
     }
+  }
+  async function getTransaction(type, status) {
+    const { contract, accounts } = await authorization();
 
-    (async () => {
-        await authorization();
-    })()
-
-
-
-    document.getElementById("logout").addEventListener("click", function () {
-        window.location.href = "index.html";
-    });
-
-    // document.getElementById('searchInput').addEventListener('input', function () {
-    //     var filter = this.value.toUpperCase();
-    //     var rows = document.querySelectorAll('.transaction-table tbody tr');
-
-    //     rows.forEach(function (row) {
-    //         var cells = row.getElementsByTagName('td');
-    //         var match = false;
-
-    //         for (var i = 0; i < cells.length; i++) {
-    //             if (cells[i].innerText.toUpperCase().indexOf(filter) > -1) {
-    //                 match = true;
-    //                 break;
-    //             }
-    //         }
-
-    //         if (match) {
-    //             row.style.display = '';
-    //         } else {
-    //             row.style.display = 'none';
-    //         }
-    //     });
-    // });
-
-    async function getUserByAddress(address) {
-        const { contract, accounts } = await authorization();
-
-        const user = await contract.methods.getUserDetail(address).call();
-        return user
-    }
-
-    async function confirmTransaction(kopiID) {
-        const { contract, accounts } = await authorization();
-
-        try {
-            const user = await contract.methods.konfirmasiTransaksi(kopiID).send({ from: accounts[0] });
-            alert("berhasil Melakukan konfirmasi")
-            window.location.reload()
-        } catch (error) {
-            console.error(error)
-            alert(`terjadi kesalahan ${error}`)
+    const transaction = await contract.methods
+      .getTransactionByWallet(accounts[0])
+      .call();
+    const petani = await getUserByAddress(accounts[0]);
+    const transaction_status = ["TERTUNDA", "TERKONFIRMASI"];
+    let historyTransaction = [];
+    switch (type) {
+      case "IN":
+        for (const key of transaction) {
+          if (key.penerima === accounts[0]) {
+            historyTransaction.push(key);
+          }
         }
-    }
-    async function getTransaction(type, status) {
-        const { contract, accounts } = await authorization();
-
-        const transaction = await contract.methods.getTransactionByWallet(accounts[0]).call()
-        const petani = await getUserByAddress(accounts[0])
-        const transaction_status = ["TERTUNDA", "TERKONFIRMASI"];
-        let historyTransaction = []
-        switch (type) {
-            case "IN":
-                for (const key of transaction) {
-                    if (key.penerima === accounts[0]) {
-                        historyTransaction.push(key)
-                    }
-                }
-                document.getElementById("transaction").innerHTML = await Promise.all(historyTransaction.map(async (e) => {
-                    const user = await getUserByAddress(e.pengirim)
-                    console.log(e)
-                    if (e.penerima === accounts[0]) {
-                        if (status === "TERKONFIRMASI") {
-
-                            if (e.status == 1) {
-
-                                return `
+        document.getElementById("transaction").innerHTML = await Promise.all(
+          historyTransaction.map(async (e) => {
+            const user = await getUserByAddress(e.pengirim);
+            console.log(e);
+            if (e.penerima === accounts[0]) {
+              if (status === "TERKONFIRMASI") {
+                if (e.status == 1) {
+                  return `
                                     <tr>
                                         <td>${e?.produkID}</td>
                                         <td>${e?.kopiID}</td>
@@ -132,17 +132,26 @@
                                         <td>${user.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                                                                <td>${new Date(e.tanggalTransaksi * 1000)}</td>
+                                                                                <td>${new Date(
+                                                                                  e.tanggalTransaksi *
+                                                                                    1000
+                                                                                )}</td>
 
-                                        <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) == 1 && petani.walletAddress === e.penerima) ? `'` : ""}</td>
+                                        <td>${
+                                          transaction_status[parseInt(e.status)]
+                                        }</td>
+                                        <td>${
+                                          parseInt(e.status) == 1 &&
+                                          petani.walletAddress === e.penerima
+                                            ? `'`
+                                            : ""
+                                        }</td>
                                     </tr>
-                            `
-                            }
-                        } else if (status === "TERTUNDA") {
-
-                            if (e.status == 0) {
-                                return `
+                            `;
+                }
+              } else if (status === "TERTUNDA") {
+                if (e.status == 0) {
+                  return `
                                     <tr>
                                         <td>${e?.produkID}</td>
                                         <td>${e?.kopiID}</td>
@@ -151,15 +160,25 @@
                                         <td>${user.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                                                               <td>${new Date(e.tanggalTransaksi * 1000)}</td>
+                                                                               <td>${new Date(
+                                                                                 e.tanggalTransaksi *
+                                                                                   1000
+                                                                               )}</td>
 
-                                        <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) == 0 && petani.walletAddress === e.penerima) ? `<button  class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ""}</td>
+                                        <td>${
+                                          transaction_status[parseInt(e.status)]
+                                        }</td>
+                                        <td>${
+                                          parseInt(e.status) == 0 &&
+                                          petani.walletAddress === e.penerima
+                                            ? `<button  class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'`
+                                            : ""
+                                        }</td>
                                     </tr>
-                            `
-                            }
-                        } else {
-                            return `
+                            `;
+                }
+              } else {
+                return `
                                     <tr>
                                         <td>${e?.kopiID}</td>
                                         <td>${e?.produkID}</td>
@@ -168,29 +187,63 @@
                                         <td>${petani.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                        <td>${new Date(e.tanggalTransaksi * 1000)}</td>
+                                        <td>${new Date(
+                                          e.tanggalTransaksi * 1000
+                                        )}</td>
 
-                                        <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) == 0 && petani.walletAddress === e.penerima) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : "<button class='btn btn-primary' disabled>Terkonfirmasi</button>"}</td>
+                                        <td>${
+                                          transaction_status[parseInt(e.status)]
+                                        }</td>
+                                        <td>${
+                                          parseInt(e.status) == 0 &&
+                                          petani.walletAddress === e.penerima
+                                            ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'`
+                                            : "<button class='btn btn-primary' disabled>Terkonfirmasi</button>"
+                                        }</td>
                                     </tr>
-                            `
-                        }
-                    }
-
-                }))
-                break
-            case "OUT":
-                for (const key of transaction) {
-                    if (key.pengirim === accounts[0]) {
-                        historyTransaction.push(key)
-                    }
+                            `;
+              }
+            }
+          })
+        );
+        break;
+      case "OUT":
+        for (const key of transaction) {
+          if (key.pengirim === accounts[0]) {
+            historyTransaction.push(key);
+          }
+        }
+        const row = await Promise.all(
+          historyTransaction.map(async (e) => {
+            const user = await getUserByAddress(e.pengirim);
+            if (e.pengirim === accounts[0]) {
+              if (status === "TERKONFIRMASI") {
+                if (e.status == 1) {
+                  return `
+                                    <tr>
+                                        <td>${e.kopiID}</td>
+                                        <td>${e.transaksiID}</td>
+                                        <td>${petani.nama}</td>
+                                        <td>${petani.alamat}</td>
+                                        <td>${e.varietas}</td>
+                                        <td>${e.kuantitas}</td>
+                                        <td>${new Date(
+                                          e.tanggalTransaksi * 1000
+                                        )}</td>
+                                        <td>${
+                                          transaction_status[parseInt(e.status)]
+                                        }</td>
+                                        <td>${
+                                          parseInt(e.status) === 0 &&
+                                          petani.walletAddress === e.penerima
+                                            ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'`
+                                            : ""
+                                        }</td>
+                                    </tr>
+                            `;
                 }
-                const row = await Promise.all(historyTransaction.map(async (e) => {
-                    const user = await getUserByAddress(e.pengirim)
-                    if (e.pengirim === accounts[0]) {
-                        if (status === "TERKONFIRMASI") {
-                            if (e.status == 1) {
-                                return `
+              } else if (status === "TERTUNDA" && e.status == 0) {
+                return `
                                     <tr>
                                         <td>${e.kopiID}</td>
                                         <td>${e.transaksiID}</td>
@@ -198,30 +251,24 @@
                                         <td>${petani.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                        <td>${new Date(e.tanggalTransaksi * 1000)}</td>
-                                        <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) === 0 && petani.walletAddress === e.penerima) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ""}</td>
-                                    </tr>
-                            `
-                            }
+                                                                                <td>${new Date(
+                                                                                  e.tanggalTransaksi *
+                                                                                    1000
+                                                                                )}</td>
 
-                        } else if (status === "TERTUNDA" && e.status == 0) {
-                            return `
-                                    <tr>
-                                        <td>${e.kopiID}</td>
-                                        <td>${e.transaksiID}</td>
-                                        <td>${petani.nama}</td>
-                                        <td>${petani.alamat}</td>
-                                        <td>${e.varietas}</td>
-                                        <td>${e.kuantitas}</td>
-                                                                                <td>${new Date(e.tanggalTransaksi * 1000)}</td>
-
-                                        <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) === 0 && petani.walletAddress === e.penerima) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ""}</td>
+                                        <td>${
+                                          transaction_status[parseInt(e.status)]
+                                        }</td>
+                                        <td>${
+                                          parseInt(e.status) === 0 &&
+                                          petani.walletAddress === e.penerima
+                                            ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'`
+                                            : ""
+                                        }</td>
                                     </tr>
-                            `
-                        } else {
-                            return `
+                            `;
+              } else {
+                return `
                                     <tr>
                                         <td>${e.produkID}</td>
                                         <td>${e.transaksiID}</td>
@@ -229,35 +276,49 @@
                                         <td>${petani.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                                                                <td>${new Date(e.tanggalTransaksi * 1000)}</td>
+                                                                                <td>${new Date(
+                                                                                  e.tanggalTransaksi *
+                                                                                    1000
+                                                                                )}</td>
 
-                                        <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) === 0 && petani.walletAddress === e.penerima) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ""}</td>
+                                        <td>${
+                                          transaction_status[parseInt(e.status)]
+                                        }</td>
+                                        <td>${
+                                          parseInt(e.status) === 0 &&
+                                          petani.walletAddress === e.penerima
+                                            ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'`
+                                            : ""
+                                        }</td>
                                     </tr>
-                            `
-                        }
-                    }
-                }))
-                document.getElementById("transaction").innerHTML = row.toString().replace(/,/g, "");
-                break
-        }
+                            `;
+              }
+            }
+          })
+        );
+        document.getElementById("transaction").innerHTML = row
+          .toString()
+          .replace(/,/g, "");
+        break;
     }
-    // Main call
-    (async () => {
-        console.log("call here")
+  }
+  // Main call
+  (async () => {
+    console.log("call here");
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const params = urlParams.get('type') || 'IN';
-        const status = urlParams.get('status');
-        document.getElementById("status").innerText = ` ${status || ''}`
-        document.getElementById("title").innerText = `${(params === "IN") ? "Transaksi Masuk " : "Transaksi Keluar"}`
-        await getTransaction(params, status)
-        if(status === "TERKONFIRMASI") {
-            document.getElementById('terkonfirmasi').classList.add("active")
-            document.getElementById("aksi").setAttribute("hidden", true);
-        }else {
-            document.getElementById('tertunda').classList.add("active")
-
-        }
-    })()
+    const urlParams = new URLSearchParams(window.location.search);
+    const params = urlParams.get("type") || "IN";
+    const status = urlParams.get("status");
+    document.getElementById("status").innerText = ` ${status || ""}`;
+    document.getElementById("title").innerText = `${
+      params === "IN" ? "Transaksi Masuk " : "Transaksi Keluar"
+    }`;
+    await getTransaction(params, status);
+    if (status === "TERKONFIRMASI") {
+      document.getElementById("terkonfirmasi").classList.add("active");
+      document.getElementById("aksi").setAttribute("hidden", true);
+    } else {
+      document.getElementById("tertunda").classList.add("active");
+    }
+  })();
 </script>

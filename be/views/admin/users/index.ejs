@@ -1,245 +1,254 @@
 <!DOCTYPE html>
 <html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content='width=device-width, initial-scale=1, shrink-to-fit=no'>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
     <title>User Management - KopiChain</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Yatra+One&display=swap"
-        rel="stylesheet">
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&family=Yatra+One&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #ffffff;
-            color: #74512d;
-            overflow-x: hidden;
-        }
+      body {
+        font-family: "Poppins", sans-serif;
+        background: #ffffff;
+        color: #74512d;
+        overflow-x: hidden;
+      }
 
-        .navbar {
-            background-color: #f8f4e1;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #d8b18a;
-            position: fixed;
-            width: 100%;
-            z-index: 1000;
-        }
+      .navbar {
+        background-color: #f8f4e1;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #d8b18a;
+        position: fixed;
+        width: 100%;
+        z-index: 1000;
+      }
 
-        .navbar .logo {
-            font-family: 'Yatra One', cursive;
-            font-size: 24px;
-            color: #74512d;
-        }
+      .navbar .logo {
+        font-family: "Yatra One", cursive;
+        font-size: 24px;
+        color: #74512d;
+      }
 
-        .navbar .title {
-            font-family: 'Poppins', sans-serif;
-            font-size: 20px;
-            color: #74512d;
-            font-weight: bold;
-        }
+      .navbar .title {
+        font-family: "Poppins", sans-serif;
+        font-size: 20px;
+        color: #74512d;
+        font-weight: bold;
+      }
 
-        .sidebar {
-            background-color: #f8f4e1;
-            width: 250px;
-            height: calc(100vh - 56px);
-            position: fixed;
-            top: 56px;
-            padding-top: 20px;
-            border-right: 1px solid #d8b18a;
-            padding-left: 20px;
-            padding-right: 20px;
-        }
+      .sidebar {
+        background-color: #f8f4e1;
+        width: 250px;
+        height: calc(100vh - 56px);
+        position: fixed;
+        top: 56px;
+        padding-top: 20px;
+        border-right: 1px solid #d8b18a;
+        padding-left: 20px;
+        padding-right: 20px;
+      }
 
-        .sidebar img {
-            width: 100px;
-            border-radius: 50%;
-            display: block;
-            margin: 0 auto 10px;
-        }
+      .sidebar img {
+        width: 100px;
+        border-radius: 50%;
+        display: block;
+        margin: 0 auto 10px;
+      }
 
-        .sidebar .admin-info {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+      .sidebar .admin-info {
+        text-align: center;
+        margin-bottom: 20px;
+      }
 
-        .sidebar .admin-info .admin {
-            font-size: 18px;
-            font-weight: bold;
-        }
+      .sidebar .admin-info .admin {
+        font-size: 18px;
+        font-weight: bold;
+      }
 
-        .sidebar .admin-info .wallet {
-            font-size: 12px;
-            word-break: break-all;
-        }
+      .sidebar .admin-info .wallet {
+        font-size: 12px;
+        word-break: break-all;
+      }
 
-        .sidebar ul {
-            list-style: none;
-            padding: 0;
-        }
+      .sidebar ul {
+        list-style: none;
+        padding: 0;
+      }
 
-        .sidebar ul li {
-            padding: 10px 0;
-            text-align: left;
-        }
+      .sidebar ul li {
+        padding: 10px 0;
+        text-align: left;
+      }
 
-        .sidebar ul li a {
-            color: #74512d;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
+      .sidebar ul li a {
+        color: #74512d;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+      }
 
-        .sidebar ul li a .icon {
-            margin-right: 10px;
-        }
+      .sidebar ul li a .icon {
+        margin-right: 10px;
+      }
 
-        .sidebar ul li.active {
-            background-color: #f8dfc6;
-            font-weight: bold;
-        }
+      .sidebar ul li.active {
+        background-color: #f8dfc6;
+        font-weight: bold;
+      }
 
-        .content {
-            margin-left: 270px;
-            padding: 20px;
-            padding-top: 80px;
-        }
+      .content {
+        margin-left: 270px;
+        padding: 20px;
+        padding-top: 80px;
+      }
 
-        .header-with-button {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+      .header-with-button {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
 
-        .header-with-button h1 {
-            font-size: 20px;
-            color: #74512d;
-            font-weight: bold;
-        }
+      .header-with-button h1 {
+        font-size: 20px;
+        color: #74512d;
+        font-weight: bold;
+      }
 
-        .btn-add-user {
-            background-color: #74512d;
-            color: #ffffff;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            font-size: 14px;
-            align-self: flex-end;
-        }
+      .btn-add-user {
+        background-color: #74512d;
+        color: #ffffff;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 5px;
+        font-size: 14px;
+        align-self: flex-end;
+      }
 
-        .user-table {
-            background-color: #ffffff;
-            border: 1px solid #d8b18a;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-        }
+      .user-table {
+        background-color: #ffffff;
+        border: 1px solid #d8b18a;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+      }
 
-        .user-table table {
-            width: 100%;
-            color: #74512d;
-            font-size: 18px;
-        }
+      .user-table table {
+        width: 100%;
+        color: #74512d;
+        font-size: 18px;
+      }
 
-        .user-table table th,
-        .user-table table td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #d8b18a;
-            font-size: 14px;
-        }
+      .user-table table th,
+      .user-table table td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #d8b18a;
+        font-size: 14px;
+      }
 
-        .user-table table th {
-            background-color: #d8b18a;
-            color: #ffffff;
-        }
+      .user-table table th {
+        background-color: #d8b18a;
+        color: #ffffff;
+      }
 
-        .user-table table tr:nth-child(even) {
-            background-color: #f8f4e1;
-        }
+      .user-table table tr:nth-child(even) {
+        background-color: #f8f4e1;
+      }
 
-        .user-table table tr:nth-child(odd) {
-            background-color: #ffffff;
-        }
+      .user-table table tr:nth-child(odd) {
+        background-color: #ffffff;
+      }
 
-        .user-table-body {
-            max-height: 500px;
-            overflow-y: auto;
-        }
+      .user-table-body {
+        max-height: 500px;
+        overflow-y: auto;
+      }
 
-        .search-container {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
+      .search-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
 
-        .search-container input {
-            width: 200px;
-            padding: 5px;
-            border: 1px solid #d8b18a;
-            border-radius: 5px;
-        }
+      .search-container input {
+        width: 200px;
+        padding: 5px;
+        border: 1px solid #d8b18a;
+        border-radius: 5px;
+      }
 
-        .search-container select {
-            width: 100px;
-            padding: 5px;
-            border: 1px solid #d8b18a;
-            border-radius: 5px
-        }
+      .search-container select {
+        width: 100px;
+        padding: 5px;
+        border: 1px solid #d8b18a;
+        border-radius: 5px;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="navbar">
-        <div class="logo">KOPI MBEKAYU</div>
-        <div class="title">SISTEM TRACEABILITY</div>
+      <div class="logo">KOPI MBEKAYU</div>
+      <div class="title">SISTEM TRACEABILITY</div>
     </div>
     <%-include("../components/sidebar", { active:"users" })%>
     <div class="content">
-        <div class="header-with-button">
-            <h1>User Details</h1>
-            <button class="btn-add-user" data-toggle="modal" data-target="#addUserModal">Add User</button>
+      <div class="header-with-button">
+        <h1>User Details</h1>
+        <button
+          class="btn-add-user"
+          data-toggle="modal"
+          data-target="#addUserModal"
+        >
+          Add User
+        </button>
+      </div>
+      <div class="user-table">
+        <div class="search-container">
+          <div>
+            Show
+            <select id="entriesSelect" onchange="updateEntries()">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+            entries
+          </div>
+          <div>Search: <input type="text" id="searchInput" onkeyup="" /></div>
         </div>
-        <div class="user-table">
-            <div class="search-container">
-                <div>
-                    Show
-                    <select id="entriesSelect" onchange="updateEntries()">
-                        <option value="5">5</option>
-                        <option value="10">10</option>
-                        <option value="25">25</option>
-                        <option value="50">50</option>
-                        <option value="100">100</option>
-                    </select>
-                    entries
-                </div>
-                <div>
-                    Search: <input type="text" id="searchInput" onkeyup="">
-                </div>
-            </div>
-            <h2 style="font-size: 14px; font-weight: bold;">TABEL USERS</h2>
-            <div class="user-table-body">
-                <table id="userTable">
-                    <thead>
-                        <tr>
-                            <th>User Wallet Address</th>
-                            <th>Nama</th>
-                            <th>Role ID</th>
-                            <th>Telepon</th>
-                            <th>Alamat</th>
-                        </tr>
-                    </thead>
-                    <tbody id="user-table">
-
-
-                        <!-- Tambahkan baris user lainnya sesuai kebutuhan -->
-                    </tbody>
-                </table>
-            </div>
+        <h2 style="font-size: 14px; font-weight: bold">TABEL USERS</h2>
+        <div class="user-table-body">
+          <table id="userTable">
+            <thead>
+              <tr>
+                <th>User Wallet Address</th>
+                <th>Nama</th>
+                <th>Role ID</th>
+                <th>Telepon</th>
+                <th>Alamat</th>
+              </tr>
+            </thead>
+            <tbody id="user-table">
+              <!-- Tambahkan baris user lainnya sesuai kebutuhan -->
+            </tbody>
+          </table>
         </div>
+      </div>
     </div>
 
     <!-- Add User Modal -->
@@ -247,15 +256,15 @@
     <%- include("components/modal")%>
 
     <script>
-        let _users = [];
-        function parseToTable(users) {
-            const roles = ["PETANI", "PENGEPUL", "PRODUSER", "RETAIL"];
-            // console.log(users)
-            let table = ""
+      let _users = [];
+      function parseToTable(users) {
+        const roles = ["PETANI", "PENGEPUL", "PRODUSER", "RETAIL"];
+        // console.log(users)
+        let table = "";
 
-            for (const e of users) {
-                console.log(e.nama)
-                table += `
+        for (const e of users) {
+          console.log(e.nama);
+          table += `
                          <tr>
                             <td>${e?.walletAddress}</td>
                             <td>${e?.nama}</td>
@@ -263,38 +272,37 @@
                             <td>${e?.telepon}</td>
                             <td>${e?.alamat}</td>
                         </tr>
-                    `
-            }
-            document.getElementById("user-table").innerHTML = table
-
+                    `;
         }
-        (async () => {
-            try {
-                const { abi, address, web3 } = await smartContract();
-                const accounts = await web3.eth.getAccounts();
-                const contract = new web3.eth.Contract(abi, address.address);
-                const users = await contract.methods.getUsers().call();
-                _users = users
-                parseToTable(users)
-            } catch (error) {
-                console.error(error)
-                alert("terjadi kesalahan")
-            }
-        })()
+        document.getElementById("user-table").innerHTML = table;
+      }
+      (async () => {
+        try {
+          const { abi, address, web3 } = await smartContract();
+          const accounts = await web3.eth.getAccounts();
+          const contract = new web3.eth.Contract(abi, address.address);
+          const users = await contract.methods.getUsers().call();
+          _users = users;
+          parseToTable(users);
+        } catch (error) {
+          console.error(error);
+          alert("terjadi kesalahan");
+        }
+      })();
 
-        document.getElementById("searchInput").addEventListener("keyup", (e) => {
-            const value = e.currentTarget.value
-            let users = _users.filter(person => person.nama.toLowerCase() === value.toLowerCase()) || [];
-            if(value === "") users = _users
-            parseToTable(users);
-
-        })
+      document.getElementById("searchInput").addEventListener("keyup", (e) => {
+        const value = e.currentTarget.value;
+        let users =
+          _users.filter(
+            (person) => person.nama.toLowerCase() === value.toLowerCase()
+          ) || [];
+        if (value === "") users = _users;
+        parseToTable(users);
+      });
     </script>
 
-    <script src='https://code.jquery.com/jquery-3.5.1.slim.min.js'></script>
-    <script src='https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js'></script>
-    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
-
-</body>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  </body>
 </html>
