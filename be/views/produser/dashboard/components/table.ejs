@@ -64,9 +64,11 @@
   }
   (async () => {
     // Tambahkan script Anda
-    const abi = await fetch("/sc/abi.json").then((res) => res.json());
-    const address = await fetch("/sc/address.json").then((res) => res.json());
-    const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+    const [abi, address, bytecode] = await Promise.all([
+      fetch("/abi").then((res) => res.json()),
+      fetch("/address").then((res) => res.json()),
+      fetch("/bytecode").then((res) => res.text()),
+    ]);
 
     localStorage.setItem("abi", JSON.stringify(abi));
     localStorage.setItem("address", JSON.stringify(address));
