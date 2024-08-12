@@ -9,9 +9,12 @@ const fs = require("fs");
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use("/images", express.static("views/assets/images"));
 app.use("/styles", express.static("views/assets/styles"));
 app.use("/sc", express.static("sc"));
+
+
 
 // Konfigurasi MySQL
 // const db = mysql.createConnection({
