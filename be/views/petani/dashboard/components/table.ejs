@@ -1,161 +1,146 @@
 <div class="transaction-table">
-  <h2 style="font-size: 14px; font-weight: bold">DETAIL SEMUA TRANSAKSI</h2>
-  <div class="transaction-table-body">
-    <table>
-      <thead>
-        <tr>
-          <th>ID Product</th>
-          <th>ID Kopi</th>
-          <th>ID Transaksi</th>
-          <th>Petani</th>
-          <th>Pengepul</th>
-          <th>Produsen</th>
-          <th>Seller</th>
-          <th>Status</th>
-          <th>Aksi</th>
-        </tr>
-      </thead>
-      <tbody id="transactionTable">
-        <!-- Tambahkan baris transaksi lainnya sesuai kebutuhan -->
-      </tbody>
-    </table>
-  </div>
+    <h2 style="font-size: 14px; font-weight: bold;">DETAIL SEMUA TRANSAKSI</h2>
+    <div class="transaction-table-body">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Product</th>
+                    <th>ID Kopi</th>
+                    <th>ID Transaksi</th>
+                    <th>Petani</th>
+                    <th>Pengepul</th>
+                    <th>Produsen</th>
+                    <th>Seller</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTable">
+
+                <!-- Tambahkan baris transaksi lainnya sesuai kebutuhan -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-  async function confirmationTransaction(kopiID) {
-    // Fetching JSON and text files
+    async function confirmationTransaction(kopiID) {
+        // Fetching JSON and text files
+            
+            // Ubah bagian berikut -> Lakukan ke yang lain juga
+            // const abi = await fetch("/sc/abi.json").then((res) => res.json());
+            // const address = await fetch("/sc/address.json").then((res) => res.json());
+            // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+            
+            // Menjadi seperti berikut
+        const [abi, address, bytecode] = await Promise.all([
+            fetch("/abi").then((res) => res.json()),
+            fetch("/address").then((res) => res.json()),
+            fetch("/bytecode").then((res) => res.text())
+        ]);
 
-    // Ubah bagian berikut -> Lakukan ke yang lain juga
-    // const abi = await fetch("/sc/abi.json").then((res) => res.json());
-    // const address = await fetch("/sc/address.json").then((res) => res.json());
-    // const bytecode = await fetch("/sc/bytecode.txt").then((res) => res.text());
+        localStorage.setItem("abi", JSON.stringify(abi))
+        localStorage.setItem("address", JSON.stringify(address))
+        localStorage.setItem("bytecode", bytecode)
 
-    // Menjadi seperti berikut
-    const [abi, address, bytecode] = await Promise.all([
-      fetch("/abi").then((res) => res.json()),
-      fetch("/address").then((res) => res.json()),
-      fetch("/bytecode").then((res) => res.text()),
-    ]);
-
-    localStorage.setItem("abi", JSON.stringify(abi));
-    localStorage.setItem("address", JSON.stringify(address));
-    localStorage.setItem("bytecode", bytecode);
-
-    const web3 = new Web3(window.ethereum);
-
-    const accounts = await web3.eth.getAccounts();
-    const userAddress = accounts[0];
-    localStorage.setItem("active-user", userAddress);
-    let user = JSON.parse(localStorage.getItem("session"));
-
-    const contract = new web3.eth.Contract(abi, address.address);
-
-    try {
-      await contract.methods
-        .konfirmasiTransaksi(kopiID)
-        .send({ from: userAddress });
-      alert("berhasil konfirmasi transaksi");
-      location.reload();
-    } catch (error) {
-      alert("terjadi kesalahan ");
-      console.error(error);
-    }
-  }
-  (async () => {
-    // Tambahkan script Anda
-    const [abi, address, bytecode] = await Promise.all([
-      fetch("/abi").then((res) => res.json()),
-      fetch("/address").then((res) => res.json()),
-      fetch("/bytecode").then((res) => res.text()),
-    ]);
-
-    localStorage.setItem("abi", JSON.stringify(abi));
-    localStorage.setItem("address", JSON.stringify(address));
-    localStorage.setItem("bytecode", bytecode);
-    const status = ["DALAM PROSES", "SELESAI"];
-    // Check if MetaMask is installed
-    if (typeof window.ethereum !== "undefined") {
-      try {
-        // Request account access if needed
-
-        // We use the MetaMask provider to create a new Web3 instance
         const web3 = new Web3(window.ethereum);
 
-        // Get the user's Ethereum address
         const accounts = await web3.eth.getAccounts();
         const userAddress = accounts[0];
         localStorage.setItem("active-user", userAddress);
-
         let user = JSON.parse(localStorage.getItem("session"));
+
         const contract = new web3.eth.Contract(abi, address.address);
 
         try {
-          let transaction = await contract.methods
-            .getTransactionByWallet(userAddress)
-            .call();
+            await contract.methods.konfirmasiTransaksi(kopiID).send({ from: userAddress });
+            alert("berhasil konfirmasi transaksi")
+            location.reload();
+        } catch (error) {
+            alert("terjadi kesalahan ")
+            console.error(error)
 
-          // console.log("transaction ", transaction);
-          transaction = await transaction.filter((value, index, self) => {
-            return (
-              index ===
-              self.findIndex((t) => {
-                return t.kopiID.toLowerCase() === value.kopiID.toLowerCase();
-              })
-            );
-          });
+        }
+    }
+    (async () => {
+        // Tambahkan script Anda
+        const [abi, address, bytecode] = await Promise.all([
+            fetch("/abi").then((res) => res.json()),
+            fetch("/address").then((res) => res.json()),
+            fetch("/bytecode").then((res) => res.text())
+        ]);
 
-          let bind_tx = Promise.all(
-            transaction.map(async (e) => {
-              let status_petani = "DALAM PROSES";
-              let status_pengepul = "DALAM PROSES";
-              if (user.walletAddress === e.pengirim) {
-                status_pengepul = status[e.status];
-                status_petani = "SELESAI";
-              }
-              const history = await contract.methods
-                .getHistoryTransaksi(e.kopiID)
-                .call();
+        localStorage.setItem("abi", JSON.stringify(abi))
+        localStorage.setItem("address", JSON.stringify(address))
+        localStorage.setItem("bytecode", bytecode)
+        const status = ["DALAM PROSES", "SELESAI"];
+        // Check if MetaMask is installed
+        if (typeof window.ethereum !== 'undefined') {
+            try {
 
-              let append = await history
-                .map((e) => {
-                  return `
+                // Request account access if needed
+
+                // We use the MetaMask provider to create a new Web3 instance
+                const web3 = new Web3(window.ethereum);
+
+                // Get the user's Ethereum address
+                const accounts = await web3.eth.getAccounts();
+                const userAddress = accounts[0];
+                localStorage.setItem("active-user", userAddress);
+
+                let user = JSON.parse(localStorage.getItem("session"));
+                const contract = new web3.eth.Contract(abi, address.address);
+                
+                try {
+                    let transaction = await contract.methods.getTransactionByWallet(userAddress).call();
+                   
+                    // console.log("transaction ", transaction);
+                    transaction = await transaction.filter((value, index, self) => {
+                        return index === self.findIndex((t) => {
+                            return t.kopiID.toLowerCase() === value.kopiID.toLowerCase()
+                        })
+                    })
+
+                    let bind_tx = Promise.all(transaction.map(async (e) => {
+                        let status_petani = "DALAM PROSES";
+                        let status_pengepul = "DALAM PROSES";
+                        if (user.walletAddress === e.pengirim) {
+                            status_pengepul = status[e.status];
+                            status_petani = "SELESAI";
+                        }   
+                        const history = await contract.methods.getHistoryTransaksi(e.kopiID).call()
+                        
+                        let append = await history.map((e) => {
+                            return `
                                 <td>${status[e.status]}</td>
-                            `;
-                })
-                .join(",")
-                .toString();
+                            `
+                        }).join(",").toString()
 
-              return `
+                        return `
                             <tr>
                                 <td>${e.produkID}</td>
                                 <td>${e.kopiID}</td>
                                 <td>${e.transaksiID}</td>
                                 ${await append}
                             </tr>
-                        `;
-            })
-          );
-          d.getElementById("transactionTable").innerHTML = await bind_tx;
-        } catch (error) {
-          console.log(error);
-          alert(
-            "Gagal Login, Terjadi kesalahan. Hubungi admin dan pastikan akun anda telah terdaftar"
-          );
-        }
+                        `
+                    }))
+                    d.getElementById("transactionTable").innerHTML = await bind_tx
 
-        // Display the user's address
-        // document.getElementById('userAddress').innerText = `Logged in as: ${userAddress}`;
-      } catch (error) {
-        console.error(
-          "User denied account access or there was an error: ",
-          error
-        );
-      }
-    } else {
-      console.log(
-        "MetaMask is not installed. Please install it to use this app."
-      );
-    }
-  })();
+
+                } catch (error) {
+                    console.log(error)
+                    alert("Gagal Login, Terjadi kesalahan. Hubungi admin dan pastikan akun anda telah terdaftar");
+                }
+
+
+                // Display the user's address
+                // document.getElementById('userAddress').innerText = `Logged in as: ${userAddress}`;
+            } catch (error) {
+                console.error("User denied account access or there was an error: ", error);
+            }
+        } else {
+            console.log('MetaMask is not installed. Please install it to use this app.');
+        }
+    })()
 </script>
