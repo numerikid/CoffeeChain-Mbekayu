@@ -123,9 +123,7 @@
                                 <td>${e.kopiID}</td>
                                 <td>${e.transaksiID}</td>
                                 ${await append}
-                                <td><a class="btn btn-primary" href="/trace?id=${
-                                  e.produkID
-                                }">Detail</a></td>
+                                <td>${await history.length >= 5 ? `<a class="btn btn-primary" href="/trace?id=${e.produkID}">Detail</a>` : ''}</td>
                             </tr>
                         `;
             })
