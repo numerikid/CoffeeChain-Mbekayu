@@ -122,9 +122,9 @@
                                         <td>${petani.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                        <td>${new Date(e.tanggalTransaksi * 1000)}</td>
+                                       <td>${new Date(e.tanggalTransaksi * 1000)}</td>
                                         <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) === 0 && e.penerima === petani.walletAddress) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ""}</td>
+                                        <td>${(parseInt(e.status) === 0 && e.penerima === petani.walletAddress) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ``}</td>
                                     </tr>
                             `
                             }
@@ -152,10 +152,9 @@
                                         <td>${petani.alamat}</td>
                                         <td>${e.varietas}</td>
                                         <td>${e.kuantitas}</td>
-                                                                                <td>${new Date(e.tanggalTransaksi * 1000)}</td>
-
+                                        <td>${new Date(e.tanggalTransaksi * 1000)}</td>
                                         <td>${transaction_status[parseInt(e.status)]}</td>
-                                        <td>${(parseInt(e.status) === 0 && e.penerima === petani.walletAddress) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : `<button disabled class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>`}</td>
+                                        <td>${(parseInt(e.status) === 0 && e.penerima === petani.walletAddress) ? `<button class='btn btn-primary' onclick="confirmTransaction('${e.kopiID}')">Konfirmasi</button>'` : ``}</td>
                                     </tr>
                             `
                         }
