@@ -56,11 +56,7 @@
         // History transaction by kopiID
         mapping(string => Transaksi[]) public transaction_history; // save history transaction;
         mapping(string => Produk) public produk; // Menggunakan produkID sebagai key
-        // string[] public kopiIDs; // Array untuk menyimpan semua kopiID
-        mapping(address => Transaksi[]) public user_transaction; //get user's transaction
-        // mapping (address => string[]) public transaction_in; // transaction in of user
-        // mapping (address => string[]) public transaction_out; // transaction out of user
-        mapping(string => string[]) public produkTransaksi; // Mapping produkID ke array transaksi kopiID
+        mapping(address => Transaksi[]) public user_transaction; //get user's transaction // Mapping produkID ke array transaksi kopiID
 
         event ProdukDitambahkan(
             string produkID,
@@ -262,32 +258,7 @@
                     keccak256(abi.encodePacked(_varietas, msg.sender, block.timestamp))
                 )
             );
-            // script
-            // for (uint256 i = 0; i < user_transaction[msg.sender].length; i++) {
-            //     if (
-            //         keccak256(
-            //             abi.encodePacked(user_transaction[msg.sender][i].kopiID)
-            //         ) == keccak256(abi.encodePacked(_kopiID))
-            //     ) {
-            //         if(users[msg.sender].roleID != 3) {
 
-            //         }
-            //         user_transaction[msg.sender][i] = Transaksi(
-            //             _kopiID,
-            //             _varietas,
-            //             _kuantitas,
-            //             msg.sender,
-            //             _penerima,
-            //             block.timestamp,
-            //             Status.PENDING,
-            //             _productID,
-            //             tanggalPanen,
-            //             keccak256(abi.encodePacked(_varietas, msg.sender, block.timestamp))
-            //         );
-
-            //         return;
-            //     }
-            // }
 
             user_transaction[msg.sender].push(
                 Transaksi(
@@ -304,18 +275,7 @@
                 )
             );
 
-            // transaction_chain[msg.sender].push(TransactionChain(_kopiID, msg.sender, true));
-            // transaction_chain[_penerima].push(TransactionChain(_kopiID, _penerima, false));
-            // transaction_out[msg.sender].push(_kopiID);
         }
-
-        // function getTransactionChain(address sender)
-        //     public
-        //     view
-        //     returns (TransactionChain[] memory)
-        // {
-        //     return transaction_chain[sender];
-        // }
 
         function konfirmasiTransaksi(string memory _kopiID)
             public
@@ -337,15 +297,21 @@
 
             Transaksi[] storage _user_transaction = user_transaction[msg.sender];
             // Transaksi[] storage sender_user_transaction = user_transaction[msg.sender];
-
             for (uint256 i = 0; i < _user_transaction.length; i++) {
                 if (keccak256(abi.encodePacked(_user_transaction[i].kopiID)) == keccak256(abi.encodePacked(_kopiID))) {
                     _user_transaction[i].status = Status.CONFIRMED;
                 }
             }
 
-            user_transaction[msg.sender] = _user_transaction;
+            Transaksi[] storage _sender_transaction = user_transaction[sender];
+            for (uint256 i = 0; i < _sender_transaction.length; i++) {
+                if (keccak256(abi.encodePacked(_sender_transaction[i].kopiID)) == keccak256(abi.encodePacked(_kopiID))) {
+                    _sender_transaction[i].status = Status.CONFIRMED;
+                }
+            }
 
+            user_transaction[msg.sender] = _user_transaction;
+            user_transaction[sender] = _sender_transaction;
             transaction_history[_kopiID] = _transaction;
 
             emit TransaksiDikonfirmasi(_kopiID, msg.sender);
@@ -392,7 +358,9 @@
                 msg.sender
             );
         }
-
+        /**
+         * @notice Get user
+         */
         function getUserDetail(address walletAddress) public view returns (User memory) {
             require(
                 users[walletAddress].walletAddress != address(0),
@@ -401,11 +369,11 @@
             return users[walletAddress];
         }
 
+        /**
+         * @notice Get all users
+         */
         function getUsers() public view returns (User[] memory) {
-            // require(
-            //     users[walletAddress].walletAddress != address(0),
-            //     "User tidak ditemukan"
-            // );
+
             return allUsers;
         }
 
@@ -432,87 +400,4 @@
             );
             return produk[_produkID];
         }
-
-        // function traceProduk(string memory _produkID) public view returns (
-        //     string memory kopiID,
-        //     string memory varietas,
-        //     uint kuantitas,
-        //     uint tanggalProduksi,
-        //     uint tanggalKadaluarsa,
-        //     address pemilik,
-        //     uint tanggalPanen,
-        //     Status status,
-        //     address[] memory perjalananAktor
-        // ) {
-        //     Produk memory prod = getProduk(_produkID);
-        //     Transaksi memory trans = getTransaksi(prod.kopiID);
-
-        //     address[] memory perjalananAktorTemp = new address[](5); // Maksimal 5 aktor dalam rantai pasok
-        //     perjalananAktorTemp[0] = trans.pengirim; // Petani
-        //     perjalananAktorTemp[1] = trans.penerima; // Pengepul
-
-        //     // Mendapatkan transaksi dari pengepul ke produser
-        //     Transaksi memory transPengepul = getTransaksiBySenderAndKopiID(trans.penerima, prod.kopiID);
-        //     perjalananAktorTemp[2] = transPengepul.penerima; // Produser
-
-        //     // Mendapatkan transaksi dari produser ke coffee shop/retail
-        //     Transaksi memory transProduser = getTransaksiBySenderAndKopiID(transPengepul.penerima, prod.kopiID);
-        //     perjalananAktorTemp[3] = transProduser.penerima; // Coffee Shop/Retail
-
-        //     // Mendapatkan transaksi dari coffee shop/retail ke admin
-        //     Transaksi memory transRetail = getTransaksiBySenderAndKopiID(transProduser.penerima, prod.kopiID);
-        //     perjalananAktorTemp[4] = transRetail.penerima; // Admin
-
-        //     return (
-        //         prod.kopiID,
-        //         trans.varietas,
-        //         prod.kuantitas,
-        //         prod.tanggalProduksi,
-        //         prod.tanggalKadaluarsa,
-        //         prod.pemilik,
-        //         trans.tanggalPanen,
-        //         trans.status,
-        //         perjalananAktorTemp
-        //     );
-        // }
-
-        // function getTransaksiBySenderAndKopiID(address sender, string memory kopiID)
-        //     internal
-        //     view
-        //     returns (Transaksi memory)
-        // {
-        //     for (uint256 i = 0; i < kopiIDs.length; i++) {
-        //         string memory key = kopiIDs[i];
-        //         if (
-        //             transaksi[key].pengirim == sender &&
-        //             keccak256(abi.encodePacked(transaksi[key].kopiID)) ==
-        //             keccak256(abi.encodePacked(kopiID))
-        //         ) {
-        //             return transaksi[key];
-        //         }
-        //     }
-        //     revert("Transaksi tidak ditemukan");
-        // }
-
-        // function uint2str(uint256 _i) internal pure returns (string memory) {
-        //     if (_i == 0) {
-        //         return "0";
-        //     }
-        //     uint256 j = _i;
-        //     uint256 len;
-        //     while (j != 0) {
-        //         len++;
-        //         j /= 10;
-        //     }
-        //     bytes memory bstr = new bytes(len);
-        //     uint256 k = len;
-        //     while (_i != 0) {
-        //         k = k - 1;
-        //         uint8 temp = (48 + uint8(_i - (_i / 10) * 10));
-        //         bytes1 b1 = bytes1(temp);
-        //         bstr[k] = b1;
-        //         _i /= 10;
-        //     }
-        //     return string(bstr);
-        // }
     }

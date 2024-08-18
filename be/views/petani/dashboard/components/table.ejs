@@ -124,7 +124,8 @@
                                 ${await append}
                                 <td>${await history.length >= 5 ? `<a class="btn btn-primary" href="/trace?id=${e.produkID}">Detail</a>` : ''}</td>
                             </tr>
-                        `
+                        `;
+                
                     }))
                     d.getElementById("transactionTable").innerHTML = await bind_tx
 
