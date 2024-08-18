@@ -173,8 +173,9 @@
         document.getElementById("status").innerText = `  ${(status) ? `- ${status}` : ''}`
         document.getElementById("type").innerText = `${(params === "IN") ? "Transaksi Masuk" : "Transaksi Keluar"}`
         if(status === "TERKONFIRMASI" ||  status === "TERKONFIRMASI" && params === "OUT" || status === "TERTUNDA" && params === "OUT") {
-            document.getElementById("aksi").setAttribute("hidden", true);
+            // document.getElementById("aksi").setAttribute("hidden", true);
         }
         await getTransaction(params, status)
     })()
+
 </script>
